@@ -2,10 +2,16 @@
 
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
-  const isSignUp = pathname.includes("/sign-up");
+  const [isSignUp, setIsSignUp] = useState(false);
+
+  // Defer pathname-dependent logic until after hydration to prevent mismatch
+  useEffect(() => {
+    setIsSignUp(pathname.includes("/sign-up"));
+  }, [pathname]);
 
   // Dynamic content based on route
   const imageSrc = isSignUp ? "/signup.svg" : "/login.svg";
