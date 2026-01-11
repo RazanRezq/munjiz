@@ -6,27 +6,27 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { MunjizIcon } from "@/components/munjiz-icon";
+import { MunjizLogo } from "@/components/munjiz-logo";
 
 const SignInPage = () => {
   return (
-    <Card className="backdrop-blur-xl bg-card/95 shadow-2xl border-border/50 overflow-hidden animate-fade-up animate-duration-700">
-      <CardHeader className="pb-6 pt-8">
-        {/* Jira-style compact header */}
-        <div className="flex flex-col items-center justify-center text-center gap-y-3">
-          {/* Small brand icon with subtle animation */}
-          <div className="animate-fade-in animate-duration-1000">
-            <MunjizIcon size={32} className="h-8 w-auto" />
-          </div>
+    <Card className="border-0 shadow-none bg-transparent">
+      <CardHeader className="pb-8 pt-0 px-0">
+        <div className="flex flex-col items-center space-y-6">
+          {/* Logo */}
+          <MunjizLogo iconSize={40} textSize="md" />
 
-          {/* Subtitle text */}
-          <p className="text-sm text-muted-foreground font-medium animate-fade-in animate-delay-200">
-            Log in to continue to Munjiz
-          </p>
+          {/* Header Text */}
+          <div className="text-center space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">Welcome back</h1>
+            <p className="text-muted-foreground">
+              Sign in to your Munjiz account
+            </p>
+          </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-5 px-8">
+      <CardContent className="space-y-5 px-0">
         {/* Google Sign In Button */}
         <Button variant="outline" className="w-full h-11 gap-3" type="button">
           <svg
@@ -116,7 +116,7 @@ const SignInPage = () => {
         </Button>
       </CardContent>
 
-      <CardFooter className="flex-col space-y-2 text-center text-sm pb-8 pt-4 border-t border-border/40">
+      <CardFooter className="flex-col space-y-2 text-center text-sm pb-0 pt-6 px-0 border-0">
         <div className="text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link

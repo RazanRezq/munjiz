@@ -1,77 +1,58 @@
-import { BackgroundLines } from "@/components/ui/background-lines";
+"use client";
+
+import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+  const pathname = usePathname();
+  const isSignUp = pathname.includes("/sign-up");
+
+  // Dynamic content based on route
+  const imageSrc = isSignUp ? "/signup.svg" : "/login.svg";
+  const headline = isSignUp ? "Join Munjiz Today" : "Welcome Back to Munjiz";
+  const subtitle = isSignUp
+    ? "Create an account to start organizing your projects and collaborating with your team."
+    : "Log in to continue managing your tasks and tracking progress efficiently.";
+
   return (
-    <BackgroundLines
-      className="min-h-screen flex items-center justify-center overflow-hidden"
-      svgOptions={{ duration: 12 }}
-    >
-      {/* Animated gradient orbs for depth and color */}
-      <div className="absolute inset-0 z-0">
-        {/* Primary purple orb - top left */}
-        <div
-          className="absolute -top-32 -left-32 w-96 h-96 rounded-full blur-3xl animate-pulse"
-          style={{
-            background:
-              "radial-gradient(circle, oklch(0.6393 0.1662 283.415 / 0.25) 0%, transparent 70%)",
-            animationDuration: "8s",
-          }}
-        />
-
-        {/* Teal orb - bottom right */}
-        <div
-          className="absolute -bottom-32 -right-32 w-md h-112 rounded-full blur-3xl animate-pulse"
-          style={{
-            background:
-              "radial-gradient(circle, oklch(0.8067 0.1417 182.18 / 0.19) 0%, transparent 70%)",
-            animationDuration: "10s",
-            animationDelay: "1s",
-          }}
-        />
-
-        {/* Gold accent orb - top right */}
-        <div
-          className="absolute -top-20 -right-20 w-80 h-80 rounded-full blur-3xl animate-pulse"
-          style={{
-            background:
-              "radial-gradient(circle, oklch(0.8094 0.1499 76.4155 / 0.15) 0%, transparent 70%)",
-            animationDuration: "9s",
-            animationDelay: "2s",
-          }}
-        />
-
-        {/* Secondary purple orb - bottom left */}
-        <div
-          className="absolute bottom-20 left-20 w-72 h-72 rounded-full blur-3xl animate-pulse"
-          style={{
-            background:
-              "radial-gradient(circle, oklch(0.6393 0.1662 283.415 / 0.19) 0%, transparent 70%)",
-            animationDuration: "11s",
-            animationDelay: "3s",
-          }}
-        />
+    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+      {/* Left Column - Form Area */}
+      <div className="flex flex-col items-center justify-center p-8 bg-background">
+        <div className="w-full max-w-md">{children}</div>
       </div>
 
-      {/* Subtle dot grid pattern overlay */}
+      {/* Right Column - Showcase Area with Curved Edge */}
       <div
-        className="absolute inset-0 z-0 opacity-[0.02]"
+        className="hidden lg:flex flex-col items-center justify-center p-12 text-center bg-linear-to-br from-primary/20 via-background to-secondary/20 dark:from-primary/10 dark:via-background dark:to-secondary/10 relative overflow-hidden"
         style={{
-          backgroundImage: `radial-gradient(circle, oklch(0.6393 0.1662 283.415) 1px, transparent 1px)`,
-          backgroundSize: "24px 24px",
+          clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%, 3% 50%)",
         }}
-      />
+      >
+        {/* Soft Glowing Blobs */}
+        {/* Top-Right Orb */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/20 rounded-full blur-3xl -z-10" />
 
-      {/* Radial vignette overlay */}
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background: `radial-gradient(circle at 50% 50%, transparent 0%, hsl(var(--background) / 0.4) 100%)`,
-        }}
-      />
+        {/* Bottom-Left Orb */}
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-secondary/20 rounded-full blur-3xl -z-10" />
 
-      {/* Content container with glassmorphism */}
-      <div className="relative z-10 w-full max-w-md px-4">{children}</div>
-    </BackgroundLines>
+        {/* Hero Illustration */}
+        <Image
+          src={imageSrc}
+          alt="Munjiz Illustration"
+          width={450}
+          height={450}
+          className="object-contain"
+        />
+
+        {/* Marketing Content */}
+        <h2 className="text-3xl font-bold tracking-tight mt-8">
+          {headline}
+        </h2>
+        <p className="text-muted-foreground text-lg mt-4 max-w-md">
+          {subtitle}
+        </p>
+      </div>
+    </div>
   );
 };
 

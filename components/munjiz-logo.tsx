@@ -55,7 +55,7 @@ export function MunjizLogo({
           textSizeClasses[textSize]
         )}
       >
-        MUNJIZ
+        Munjiz
       </span>
     </div>
   );
