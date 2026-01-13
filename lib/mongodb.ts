@@ -1,44 +1,60 @@
-import { MongoClient, Db } from "mongodb";
+import mongoose from "mongoose";
 
 if (!process.env.MONGODB_URI) {
-  throw new Error("Please add your Mongo URI to .env.local or env.local");
+  throw new Error("Please add your Mongo URI to .env.local");
 }
 
-const uri: string = process.env.MONGODB_URI;
-const options = {};
+const MONGODB_URI: string = process.env.MONGODB_URI;
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+/**
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections from growing exponentially
+ * during API Route usage.
+ */
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
 
-if (process.env.NODE_ENV === "development") {
-  // In development mode, use a global variable so that the value
-  // is preserved across module reloads caused by HMR (Hot Module Replacement).
-  const globalWithMongo = global as typeof globalThis & {
-    _mongoClientPromise?: Promise<MongoClient>;
-  };
+declare global {
+  var mongoose: MongooseCache | undefined;
+}
 
-  if (!globalWithMongo._mongoClientPromise) {
-    client = new MongoClient(uri, options);
-    globalWithMongo._mongoClientPromise = client.connect();
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+
+if (!global.mongoose) {
+  global.mongoose = cached;
+}
+
+/**
+ * Connect to MongoDB using Mongoose
+ * Returns the mongoose instance
+ */
+async function dbConnect(): Promise<typeof mongoose> {
+  if (cached.conn) {
+    return cached.conn;
   }
-  clientPromise = globalWithMongo._mongoClientPromise;
-} else {
-  // In production mode, it's best to not use a global variable.
-  client = new MongoClient(uri, options);
-  clientPromise = client.connect();
+
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      console.log("✅ MongoDB connected successfully");
+      return mongoose;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    console.error("❌ MongoDB connection error:", e);
+    throw e;
+  }
+
+  return cached.conn;
 }
 
-// Export a module-scoped MongoClient promise. By doing this in a
-// separate module, the client can be shared across functions.
-export default clientPromise;
-
-// Helper function to get database instance
-export async function getDatabase(dbName?: string): Promise<Db> {
-  const client = await clientPromise;
-  return client.db(dbName || process.env.MONGODB_DB_NAME || "munjiz");
-}
-
-// Helper function to connect (for compatibility with your project structure)
-export async function dbConnect(): Promise<Db> {
-  return getDatabase();
-}
+export default dbConnect;

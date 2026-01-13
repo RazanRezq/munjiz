@@ -25,7 +25,7 @@ const SignUpPage = () => {
       </CardHeader>
 
       <CardContent className="space-y-5 px-0">
-        {/* Google Sign In Button */}
+        {/* Google Sign Up Button */}
         <Button variant="outline" className="w-full h-11 gap-3" type="button">
           <svg
             className="w-5 h-5"
