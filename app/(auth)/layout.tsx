@@ -21,10 +21,12 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     : "Log in to continue managing your tasks and tracking progress efficiently.";
 
   return (
-    <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+    <div className="h-dvh grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
       {/* Left Column - Form Area */}
-      <div className="flex flex-col items-center justify-center p-8 bg-background">
-        <div className="w-full max-w-md">{children}</div>
+      <div className="flex flex-col items-center justify-center p-4 md:p-8 bg-background">
+        <div className="w-full max-w-md">
+          {children}
+        </div>
       </div>
 
       {/* Right Column - Showcase Area with Curved Edge */}
@@ -45,16 +47,16 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         <Image
           src={imageSrc}
           alt="Munjiz Illustration"
-          width={450}
-          height={450}
-          className="object-contain"
+          width={400}
+          height={400}
+          className="object-contain w-80 h-80"
         />
 
         {/* Marketing Content */}
-        <h2 className="text-3xl font-bold tracking-tight mt-8">
+        <h2 className="text-2xl font-bold tracking-tight mt-8">
           {headline}
         </h2>
-        <p className="text-muted-foreground text-lg mt-4 max-w-md">
+        <p className="text-muted-foreground text-base mt-4 max-w-md">
           {subtitle}
         </p>
       </div>

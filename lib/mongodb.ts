@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { MongoClient } from "mongodb";
 
 if (!process.env.MONGODB_URI) {
   throw new Error("Please add your Mongo URI to .env.local");
@@ -18,6 +19,7 @@ interface MongooseCache {
 
 declare global {
   var mongoose: MongooseCache | undefined;
+  var mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
@@ -58,3 +60,24 @@ async function dbConnect(): Promise<typeof mongoose> {
 }
 
 export default dbConnect;
+
+/**
+ * MongoDB client for Auth.js adapter
+ * This is separate from Mongoose and used specifically for NextAuth
+ */
+let clientPromise: Promise<MongoClient>;
+
+if (process.env.NODE_ENV === "development") {
+  // In development, use a global variable to preserve the client across HMR
+  if (!global.mongoClientPromise) {
+    const client = new MongoClient(MONGODB_URI);
+    global.mongoClientPromise = client.connect();
+  }
+  clientPromise = global.mongoClientPromise;
+} else {
+  // In production, create a new client
+  const client = new MongoClient(MONGODB_URI);
+  clientPromise = client.connect();
+}
+
+export { clientPromise };

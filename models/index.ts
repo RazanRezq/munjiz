@@ -3,8 +3,12 @@
  * Import models from here to use them in your API routes
  * 
  * Example usage:
- * import { Workspace, Project, Task } from "@/models";
+ * import { User, Workspace, Project, Task } from "@/models";
  */
+
+// User
+export { default as User } from "./User/userSchema";
+export type { IUser } from "./User/userSchema";
 
 // Workspace
 export { default as Workspace } from "./Workspace/workspaceSchema";
