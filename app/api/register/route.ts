@@ -2,30 +2,20 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import User from "@/models/User/userSchema";
 import dbConnect from "@/lib/mongodb";
+import { registerSchema } from "@/lib/validations/auth";
+import { ZodError } from "zod";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, password } = await req.json();
+    const body = await req.json();
 
-    // Validation
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: "Email and password are required" },
-        { status: 400 }
-      );
-    }
-
-    if (password.length < 6) {
-      return NextResponse.json(
-        { error: "Password must be at least 6 characters long" },
-        { status: 400 }
-      );
-    }
+    // Validate request body with Zod
+    const validatedData = registerSchema.parse(body);
 
     await dbConnect();
 
     // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
+    const existingUser = await User.findOne({ email: validatedData.email });
     if (existingUser) {
       return NextResponse.json(
         { error: "User with this email already exists" },
@@ -34,12 +24,12 @@ export async function POST(req: Request) {
     }
 
     // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
     // Create user
     const user = await User.create({
-      name: name || email.split("@")[0], // Use email prefix if no name provided
-      email: email.toLowerCase(),
+      name: validatedData.name,
+      email: validatedData.email,
       password: hashedPassword,
       role: "user",
     });
@@ -56,6 +46,21 @@ export async function POST(req: Request) {
       { status: 201 }
     );
   } catch (error) {
+    if (error instanceof ZodError) {
+      // Return detailed validation errors
+      const fieldErrors = error.issues.map((issue) => ({
+        field: issue.path.join("."),
+        message: issue.message,
+      }));
+      return NextResponse.json(
+        { 
+          error: "Validation failed",
+          details: fieldErrors 
+        },
+        { status: 400 }
+      );
+    }
+
     console.error("Registration error:", error);
     return NextResponse.json(
       { error: "Something went wrong during registration" },

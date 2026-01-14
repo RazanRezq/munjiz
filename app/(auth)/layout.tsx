@@ -23,8 +23,12 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className="h-dvh grid grid-cols-1 lg:grid-cols-2 overflow-hidden">
       {/* Left Column - Form Area */}
-      <div className="flex flex-col items-center justify-center p-4 md:p-8 bg-background">
-        <div className="w-full max-w-md">
+      <div className="relative flex flex-col items-center justify-center p-4 md:p-8 bg-gray-50 dark:bg-slate-900 lg:bg-background">
+        {/* Top Glow Blob - Mobile Only */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/10 rounded-full blur-3xl pointer-events-none lg:hidden" />
+        
+        {/* Card Container - Mobile/Tablet Only */}
+        <div className="relative w-full max-w-md bg-white dark:bg-background shadow-lg rounded-2xl p-6 md:p-8 lg:bg-transparent lg:shadow-none lg:p-0">
           {children}
         </div>
       </div>
@@ -47,15 +51,13 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         <Image
           src={imageSrc}
           alt="Munjiz Illustration"
-          width={400}
-          height={400}
-          className="object-contain w-80 h-80"
+          width={800}
+          height={800}
+          className="object-contain w-full h-auto max-w-xl"
         />
 
         {/* Marketing Content */}
-        <h2 className="text-2xl font-bold tracking-tight mt-8">
-          {headline}
-        </h2>
+        <h2 className="text-2xl font-bold tracking-tight mt-8">{headline}</h2>
         <p className="text-muted-foreground text-base mt-4 max-w-md">
           {subtitle}
         </p>

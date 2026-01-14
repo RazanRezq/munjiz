@@ -6,6 +6,7 @@ import { clientPromise } from "@/lib/mongodb";
 import User from "@/models/User/userSchema";
 import dbConnect from "@/lib/mongodb";
 import authConfig from "./auth.config";
+import { signInSchema } from "@/lib/validations/auth";
 
 /**
  * Full Auth.js configuration with database adapter
@@ -32,15 +33,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         try {
           console.log("🔐 Authorize called with email:", credentials?.email);
 
-          if (!credentials?.email || !credentials?.password) {
-            console.log("❌ Missing credentials");
+          // Validate credentials with Zod
+          const validatedCredentials = signInSchema.safeParse(credentials);
+          
+          if (!validatedCredentials.success) {
+            console.log("❌ Invalid credentials format");
             return null;
           }
 
           await dbConnect();
 
-          // Make sure we're querying with lowercase email
-          const email = (credentials.email as string).toLowerCase();
+          // Use validated and normalized email
+          const email = validatedCredentials.data.email;
           const user = await User.findOne({ email });
 
           console.log("👤 User found:", user ? "Yes" : "No");
@@ -51,7 +55,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           }
 
           const isPasswordValid = await bcrypt.compare(
-            credentials.password as string,
+            validatedCredentials.data.password,
             user.password
           );
 
