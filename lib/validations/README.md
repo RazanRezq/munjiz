@@ -12,6 +12,7 @@ Professional, production-ready validation schemas for authentication built with 
 - **OWASP-compliant password policies**
 - **XSS/Injection protection** (blocks dangerous characters)
 - **RFC 5321-compliant email validation**
+- **Smart email typo detection** (catches common domain misspellings)
 - **DoS attack prevention** (max length limits)
 - **Server & client-side validation** (defense in depth)
 
@@ -186,7 +187,46 @@ Output: "user@example.com"
 - **Complexity requirements** - Forces strong passwords
 - **Server-side hashing** - Never store plain text
 
-### 4. **DoS Prevention**
+### 4. **Email Typo Detection** 🎯
+
+**NEW FEATURE:** Automatically detects and suggests corrections for common email domain typos.
+
+**How it works:**
+```typescript
+// User types a common typo
+Input: "user@gamil.com"
+Error: "Did you mean user@gmail.com? Please check your email address."
+
+// User types correctly
+Input: "user@gmail.com"
+Result: ✅ Valid
+```
+
+**Catches common typos for:**
+
+| Provider | Common Typos Detected |
+|----------|----------------------|
+| **Gmail** | gamil.com, gmial.com, gmai.com, gmil.com, gmaill.com, gnail.com |
+| **Yahoo** | yaho.com, yahooo.com, yhoo.com, yahhoo.com, yaboo.com |
+| **Hotmail** | hotmial.com, hotmil.com, hotmal.com, hotmaii.com, hotmeil.com |
+| **Outlook** | outlok.com, outloook.com, outluk.com, outllook.com |
+| **iCloud** | icould.com, iclod.com, icloude.com, iclould.com |
+| **ProtonMail** | protonmial.com, protonmai.com, protonmali.com |
+| **TLD Typos** | .con instead of .com, .cpm instead of .com |
+
+**Benefits:**
+- ✅ Prevents user account creation with invalid emails
+- ✅ Reduces support tickets for "I can't receive emails"
+- ✅ Improves user experience with helpful suggestions
+- ✅ Lightweight (no external dependencies)
+
+**Example error message:**
+```
+❌ "user@gamil.com"
+→ "Did you mean user@gmail.com? Please check your email address."
+```
+
+### 5. **DoS Prevention**
 
 Maximum length limits prevent resource exhaustion:
 - Email: 254 characters (RFC 5321 standard)

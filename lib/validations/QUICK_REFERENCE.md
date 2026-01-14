@@ -50,7 +50,22 @@ import { ZodError } from "zod";
 ✅ Auto-trim: "  user@example.com  " → "user@example.com"
 ✅ Max length: 254 characters (RFC 5321)
 ✅ Valid format required
+✅ Typo detection: "user@gamil.com" → Error: "Did you mean user@gmail.com?"
 ```
+
+### **Email Typo Detection** 🎯
+
+**Caught typos:**
+```typescript
+❌ "user@gamil.com"    → Suggests: "user@gmail.com"
+❌ "user@yaho.com"     → Suggests: "user@yahoo.com"
+❌ "user@hotmial.com"  → Suggests: "user@hotmail.com"
+❌ "user@outlok.com"   → Suggests: "user@outlook.com"
+❌ "user@icould.com"   → Suggests: "user@icloud.com"
+❌ "user@gmail.con"    → Suggests: "user@gmail.com"
+```
+
+**Supported providers:** Gmail, Yahoo, Hotmail, Outlook, iCloud, ProtonMail
 
 ---
 
@@ -183,6 +198,7 @@ export async function POST(req: Request) {
 ✅ Strong password enforcement
 ✅ XSS character blocking
 ✅ Email normalization
+✅ Email typo detection (NEW!)
 ✅ Input sanitization (.trim())
 ✅ Length limits (DoS prevention)
 ✅ Server-side validation (always!)

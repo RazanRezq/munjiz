@@ -78,21 +78,124 @@ const ERROR_MESSAGES = {
 } as const;
 
 // ============================================================================
+// EMAIL TYPO DETECTION - Common Domain Misspellings
+// ============================================================================
+
+/**
+ * Domain Typo Correction Map
+ * 
+ * Maps common misspellings to their correct email provider domains.
+ * This helps users avoid account creation with invalid email addresses.
+ * 
+ * @example
+ * "gamil.com" → "gmail.com"
+ * "yaho.com" → "yahoo.com"
+ */
+const DOMAIN_TYPO_MAP: Record<string, string> = {
+  // Gmail variations
+  "gamil.com": "gmail.com",
+  "gmial.com": "gmail.com",
+  "gmai.com": "gmail.com",
+  "gmil.com": "gmail.com",
+  "gmaill.com": "gmail.com",
+  "gmails.com": "gmail.com",
+  "gnail.com": "gmail.com",
+  "gmaul.com": "gmail.com",
+  
+  // Yahoo variations
+  "yaho.com": "yahoo.com",
+  "yahooo.com": "yahoo.com",
+  "yhoo.com": "yahoo.com",
+  "yahhoo.com": "yahoo.com",
+  "yaboo.com": "yahoo.com",
+  "yahou.com": "yahoo.com",
+  
+  // Hotmail variations
+  "hotmial.com": "hotmail.com",
+  "hotmil.com": "hotmail.com",
+  "hotmal.com": "hotmail.com",
+  "hotmaii.com": "hotmail.com",
+  "hotmaill.com": "hotmail.com",
+  "hotmeil.com": "hotmail.com",
+  "hotmali.com": "hotmail.com",
+  
+  // Outlook variations
+  "outlok.com": "outlook.com",
+  "outloook.com": "outlook.com",
+  "outluk.com": "outlook.com",
+  "outllook.com": "outlook.com",
+  "outtlook.com": "outlook.com",
+  "outlouk.com": "outlook.com",
+  
+  // iCloud variations
+  "icould.com": "icloud.com",
+  "iclod.com": "icloud.com",
+  "icloud.con": "icloud.com",
+  "icloude.com": "icloud.com",
+  "iclould.com": "icloud.com",
+  
+  // ProtonMail variations
+  "protonmial.com": "protonmail.com",
+  "protonmai.com": "protonmail.com",
+  "protonmali.com": "protonmail.com",
+  "protonmeil.com": "protonmail.com",
+  
+  // Common TLD typos
+  "gmail.con": "gmail.com",
+  "yahoo.con": "yahoo.com",
+  "hotmail.con": "hotmail.com",
+  "outlook.con": "outlook.com",
+  "gmail.cpm": "gmail.com",
+  "yahoo.cpm": "yahoo.com",
+  "gmail.co": "gmail.com",
+  "yahoo.co": "yahoo.com",
+} as const;
+
+/**
+ * Extract Domain from Email
+ * 
+ * Safely extracts the domain portion of an email address.
+ * 
+ * @param email - The email address to parse
+ * @returns The domain portion (e.g., "gmail.com") or null if invalid
+ * 
+ * @example
+ * extractDomain("user@gmail.com") → "gmail.com"
+ * extractDomain("invalid") → null
+ */
+const extractDomain = (email: string): string | null => {
+  const parts = email.split("@");
+  if (parts.length !== 2) return null;
+  return parts[1].toLowerCase();
+};
+
+// ============================================================================
 // REUSABLE VALIDATION SCHEMAS
 // ============================================================================
 
 /**
- * Email Schema
+ * Email Schema with Typo Detection
  * 
  * Features:
  * - RFC 5321 compliant length validation
  * - Automatic trimming of whitespace
  * - Case normalization (lowercase)
  * - Domain validation via Zod's built-in email validator
+ * - **Smart typo detection** for common email provider misspellings
+ * - Helpful error messages with domain suggestions
+ * 
+ * Typo Detection:
+ * - Catches common misspellings (e.g., gamil.com → gmail.com)
+ * - Provides actionable error messages
+ * - Prevents registration with invalid email addresses
  * 
  * @example
  * Input:  "  USER@EXAMPLE.COM  "
- * Output: "user@example.com"
+ * Output: "user@example.com" ✅
+ * 
+ * @example
+ * Input:  "user@gamil.com"
+ * Error:  "Did you mean user@gmail.com?" ❌
  */
 const emailSchema = z
   .string()
@@ -101,7 +204,27 @@ const emailSchema = z
   .max(VALIDATION_RULES.EMAIL.MAX_LENGTH, ERROR_MESSAGES.EMAIL.TOO_LONG)
   .email(ERROR_MESSAGES.EMAIL.INVALID)
   .toLowerCase()
-  .transform((email) => email.trim());
+  .transform((email) => email.trim())
+  .superRefine((email, ctx) => {
+    // Extract domain from email
+    const domain = extractDomain(email);
+    
+    if (!domain) return; // Let the email() validator handle this
+    
+    // Check if domain is a known typo
+    const correctDomain = DOMAIN_TYPO_MAP[domain];
+    
+    if (correctDomain) {
+      // Extract username part
+      const username = email.split("@")[0];
+      const suggestedEmail = `${username}@${correctDomain}`;
+      
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Did you mean ${suggestedEmail}? Please check your email address.`,
+      });
+    }
+  });
 
 /**
  * Name Schema - Internationalization (i18n) Friendly
