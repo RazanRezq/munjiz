@@ -35,7 +35,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Right Column - Showcase Area with Curved Edge */}
       <div
-        className="hidden lg:flex flex-col items-center justify-center p-12 text-center bg-linear-to-br from-primary/20 via-background to-secondary/20 dark:from-primary/10 dark:via-background dark:to-secondary/10 relative overflow-hidden"
+        className="hidden lg:flex flex-col items-center justify-center p-8 xl:p-12 text-center bg-linear-to-br from-primary/20 via-background to-secondary/20 dark:from-primary/10 dark:via-background dark:to-secondary/10 relative overflow-hidden"
         style={{
           clipPath: "polygon(8% 0%, 100% 0%, 100% 100%, 0% 100%, 3% 50%)",
         }}
@@ -53,12 +53,12 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           alt="Munjiz Illustration"
           width={800}
           height={800}
-          className="object-contain w-full h-auto max-w-xl"
+          className="h-auto w-auto max-h-[40vh] lg:max-h-[50vh] object-contain mx-auto max-w-xl"
         />
 
         {/* Marketing Content */}
-        <h2 className="text-2xl font-bold tracking-tight mt-8">{headline}</h2>
-        <p className="text-muted-foreground text-base mt-4 max-w-md">
+        <h2 className="text-2xl font-bold tracking-tight mt-6">{headline}</h2>
+        <p className="text-muted-foreground text-base mt-3 max-w-md">
           {subtitle}
         </p>
       </div>

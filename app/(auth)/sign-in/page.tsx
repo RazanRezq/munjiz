@@ -82,33 +82,33 @@ const SignInPage = () => {
 
   return (
     <Card className="border-0 shadow-none bg-transparent py-0 gap-0">
-      <CardHeader className="pb-4 md:pb-5 px-0">
-        <div className="flex flex-col items-center space-y-2">
+      <CardHeader className="p-0 pb-2 px-0">
+        <div className="flex flex-col items-center space-y-1">
           {/* Logo */}
-          <MunjizLogo iconSize={32} textSize="md" />
+          <MunjizLogo iconSize={28} textSize="sm" />
 
           {/* Header Text */}
-          <div className="text-center space-y-1">
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight">Welcome back</h1>
-            <p className="text-muted-foreground text-sm">
+          <div className="text-center space-y-0.5">
+            <h1 className="text-lg md:text-xl font-bold tracking-tight">Welcome back</h1>
+            <p className="text-muted-foreground text-xs">
               Sign in to your Munjiz account
             </p>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 md:space-y-4 px-0">
-        <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+      <CardContent className="space-y-1.5 px-0">
+        <form onSubmit={handleSubmit} className="space-y-1.5">
           {/* Google Sign In Button */}
           <Button
             variant="outline"
-            className="w-full h-11 gap-2"
+            className="w-full h-9 gap-2"
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
           >
             <svg
-              className="w-5 h-5"
+              className="w-4 h-4"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -129,7 +129,7 @@ const SignInPage = () => {
                 fill="#EA4335"
               />
             </svg>
-            <span className="font-medium text-sm">Continue with Google</span>
+            <span className="font-medium text-xs">Continue with Google</span>
           </Button>
 
           {/* Divider with improved styling */}
@@ -152,11 +152,11 @@ const SignInPage = () => {
           )}
 
           {/* Form fields with improved spacing */}
-          <div className="space-y-3 md:space-y-4">
-            <div className="space-y-1.5">
+          <div className="space-y-2">
+            <div className="space-y-1">
               <label
                 htmlFor="email"
-                className="text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-xs font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Email
               </label>
@@ -170,19 +170,19 @@ const SignInPage = () => {
                 }}
                 placeholder="name@example.com"
                 disabled={isLoading}
-                className={`flex h-11 w-full rounded-lg border ${
+                className={`flex h-9 w-full rounded-lg border ${
                   fieldErrors.email ? "border-destructive" : "border-input"
-                } bg-background px-3 py-2 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
+                } bg-background px-3 py-1.5 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
               />
               {fieldErrors.email && (
                 <p className="text-xs text-destructive mt-1">{fieldErrors.email}</p>
               )}
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  className="text-xs font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                 >
                   Password
                 </label>
@@ -204,9 +204,9 @@ const SignInPage = () => {
                   }}
                   placeholder="Enter your password"
                   disabled={isLoading}
-                  className={`flex h-11 w-full rounded-lg border ${
+                  className={`flex h-9 w-full rounded-lg border ${
                     fieldErrors.password ? "border-destructive" : "border-input"
-                  } bg-background px-3 py-2 pr-10 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
+                  } bg-background px-3 py-1.5 pr-10 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
                 />
                 <button
                   type="button"
@@ -231,7 +231,7 @@ const SignInPage = () => {
           {/* Primary CTA with enhanced styling */}
           <Button
             variant="primary"
-            className="w-full h-11 font-semibold text-sm shadow-sm hover:shadow-md transition-all duration-200"
+            className="w-full h-9 font-semibold text-sm shadow-sm hover:shadow-md transition-all duration-200 mt-3"
             type="submit"
             disabled={isLoading}
           >
@@ -240,7 +240,7 @@ const SignInPage = () => {
         </form>
       </CardContent>
 
-      <CardFooter className="flex-col text-center text-sm pt-4 md:pt-5 px-0 border-0">
+      <CardFooter className="flex-col text-center text-xs pt-6 px-0 border-0">
         <div className="text-muted-foreground">
           Don&apos;t have an account?{" "}
           <Link

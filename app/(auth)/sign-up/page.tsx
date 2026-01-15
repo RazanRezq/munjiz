@@ -105,31 +105,31 @@ const SignUpPage = () => {
 
   return (
     <Card className="border-0 shadow-none bg-transparent py-0 gap-0">
-      <CardHeader className="pb-3 md:pb-4 px-0">
-        <div className="flex flex-col items-center space-y-2">
+      <CardHeader className="p-0 pb-2 px-0">
+        <div className="flex flex-col items-center space-y-1">
           {/* Logo */}
-          <MunjizLogo iconSize={32} textSize="md" />
+          <MunjizLogo iconSize={28} textSize="sm" />
 
           {/* Header Text */}
-          <div className="text-center space-y-1">
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight">Get started</h1>
-            <p className="text-muted-foreground text-sm">Create your Munjiz account</p>
+          <div className="text-center space-y-0.5">
+            <h1 className="text-lg md:text-xl font-bold tracking-tight">Get started</h1>
+            <p className="text-muted-foreground text-xs">Create your Munjiz account</p>
           </div>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 md:space-y-4 px-0">
-        <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+      <CardContent className="space-y-1.5 px-0">
+        <form onSubmit={handleSubmit} className="space-y-1.5">
           {/* Google Sign Up Button */}
           <Button
             variant="outline"
-            className="w-full h-11 gap-2"
+            className="w-full h-9 gap-2"
             type="button"
             onClick={handleGoogleSignUp}
             disabled={isLoading}
           >
             <svg
-              className="w-4 h-4 sm:w-5 sm:h-5"
+              className="w-4 h-4"
               viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
@@ -150,7 +150,7 @@ const SignUpPage = () => {
                 fill="#EA4335"
               />
             </svg>
-            <span className="font-medium text-sm">Continue with Google</span>
+            <span className="font-medium text-xs">Continue with Google</span>
           </Button>
 
           {/* Divider with improved styling */}
@@ -173,11 +173,11 @@ const SignUpPage = () => {
           )}
 
           {/* Form fields with improved spacing */}
-          <div className="space-y-3 md:space-y-4">
-            <div className="space-y-1.5">
+          <div className="space-y-2">
+            <div className="space-y-1">
               <label
                 htmlFor="name"
-                className="text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-xs font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Full name
               </label>
@@ -191,18 +191,18 @@ const SignUpPage = () => {
                 }}
                 placeholder="John Doe"
                 disabled={isLoading}
-                className={`flex h-11 w-full rounded-lg border ${
+                className={`flex h-9 w-full rounded-lg border ${
                   fieldErrors.name ? "border-destructive" : "border-input"
-                } bg-background px-3 py-2 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
+                } bg-background px-3 py-1.5 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
               />
               {fieldErrors.name && (
                 <p className="text-xs text-destructive mt-1">{fieldErrors.name}</p>
               )}
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label
                 htmlFor="email"
-                className="text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-xs font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Email
               </label>
@@ -216,18 +216,18 @@ const SignUpPage = () => {
                 }}
                 placeholder="name@example.com"
                 disabled={isLoading}
-                className={`flex h-11 w-full rounded-lg border ${
+                className={`flex h-9 w-full rounded-lg border ${
                   fieldErrors.email ? "border-destructive" : "border-input"
-                } bg-background px-3 py-2 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
+                } bg-background px-3 py-1.5 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
               />
               {fieldErrors.email && (
                 <p className="text-xs text-destructive mt-1">{fieldErrors.email}</p>
               )}
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label
                 htmlFor="password"
-                className="text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-xs font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Password
               </label>
@@ -242,9 +242,9 @@ const SignUpPage = () => {
                   }}
                   placeholder="Min. 8 characters, uppercase, lowercase, number, special"
                   disabled={isLoading}
-                  className={`flex h-11 w-full rounded-lg border ${
+                  className={`flex h-9 w-full rounded-lg border ${
                     fieldErrors.password ? "border-destructive" : "border-input"
-                  } bg-background px-3 py-2 pr-10 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
+                  } bg-background px-3 py-1.5 pr-10 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
                 />
                 <button
                   type="button"
@@ -264,10 +264,10 @@ const SignUpPage = () => {
                 <p className="text-xs text-destructive mt-1">{fieldErrors.password}</p>
               )}
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <label
                 htmlFor="confirmPassword"
-                className="text-sm font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                className="text-xs font-semibold leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
               >
                 Confirm Password
               </label>
@@ -282,9 +282,9 @@ const SignUpPage = () => {
                   }}
                   placeholder="Re-enter your password"
                   disabled={isLoading}
-                  className={`flex h-11 w-full rounded-lg border ${
+                  className={`flex h-9 w-full rounded-lg border ${
                     fieldErrors.confirmPassword ? "border-destructive" : "border-input"
-                  } bg-background px-3 py-2 pr-10 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
+                  } bg-background px-3 py-1.5 pr-10 text-sm text-foreground ring-offset-background transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50`}
                 />
                 <button
                   type="button"
@@ -309,7 +309,7 @@ const SignUpPage = () => {
           {/* Primary CTA with enhanced styling */}
           <Button
             variant="primary"
-            className="w-full h-11 font-semibold text-sm shadow-sm hover:shadow-md transition-all duration-200"
+            className="w-full h-9 font-semibold text-sm shadow-sm hover:shadow-md transition-all duration-200 mt-3"
             type="submit"
             disabled={isLoading}
           >
@@ -317,7 +317,7 @@ const SignUpPage = () => {
           </Button>
 
           {/* Terms text with better styling */}
-          <p className="text-xs text-center text-muted-foreground/80 leading-relaxed">
+          <p className="text-xs text-center text-muted-foreground/80 leading-snug">
             By signing up, you agree to our{" "}
             <Link
               href="/terms"
@@ -336,7 +336,7 @@ const SignUpPage = () => {
         </form>
       </CardContent>
 
-      <CardFooter className="flex-col text-center text-sm pt-4 px-0 border-0">
+      <CardFooter className="flex-col text-center text-xs pt-1.5 px-0 border-0">
         <div className="text-muted-foreground">
           Already have an account?{" "}
           <Link
