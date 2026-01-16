@@ -78,6 +78,82 @@ const ERROR_MESSAGES = {
 } as const;
 
 // ============================================================================
+// EMAIL DOMAIN VALIDATION - Disposable & Fake Domain Blocking
+// ============================================================================
+
+/**
+ * Disposable Email Domains Blacklist
+ * 
+ * Common temporary/disposable email services that should be blocked.
+ * These domains are often used for spam, fraud, or to bypass verification.
+ */
+const DISPOSABLE_EMAIL_DOMAINS = new Set([
+  // Temporary email services
+  "tempmail.com",
+  "temp-mail.org",
+  "guerrillamail.com",
+  "10minutemail.com",
+  "mailinator.com",
+  "throwaway.email",
+  "fakeinbox.com",
+  "sharklasers.com",
+  "guerrillamail.info",
+  "grr.la",
+  "guerrillamail.biz",
+  "spam4.me",
+  "maildrop.cc",
+  "yopmail.com",
+  "getnada.com",
+  "trashmail.com",
+  
+  // Known fake/test domains
+  "test.com",
+  "example.com",
+  "fake.com",
+  "invalid.com",
+  "dummy.com",
+  "sample.com",
+  "placeholder.com",
+  "fadds.com",  // The domain from your screenshot
+  "asdf.com",
+  "qwerty.com",
+  "testing.com",
+]);
+
+/**
+ * Legitimate Email Provider Domains Whitelist
+ * 
+ * Common, trusted email providers. This is used as a hint system
+ * to provide better error messages when users use uncommon domains.
+ */
+const LEGITIMATE_EMAIL_DOMAINS = new Set([
+  // Major providers
+  "gmail.com",
+  "yahoo.com",
+  "outlook.com",
+  "hotmail.com",
+  "icloud.com",
+  "protonmail.com",
+  "aol.com",
+  "mail.com",
+  "zoho.com",
+  
+  // Microsoft
+  "live.com",
+  "msn.com",
+  "outlook.sa",
+  
+  // Regional
+  "yandex.com",
+  "mail.ru",
+  "gmx.com",
+  "web.de",
+  "qq.com",
+  "163.com",
+  "126.com",
+]);
+
+// ============================================================================
 // EMAIL TYPO DETECTION - Common Domain Misspellings
 // ============================================================================
 
@@ -174,20 +250,21 @@ const extractDomain = (email: string): string | null => {
 // ============================================================================
 
 /**
- * Email Schema with Typo Detection
+ * Email Schema with Advanced Validation
  * 
  * Features:
  * - RFC 5321 compliant length validation
  * - Automatic trimming of whitespace
  * - Case normalization (lowercase)
  * - Domain validation via Zod's built-in email validator
+ * - **Disposable/fake email domain blocking**
  * - **Smart typo detection** for common email provider misspellings
  * - Helpful error messages with domain suggestions
  * 
- * Typo Detection:
- * - Catches common misspellings (e.g., gamil.com → gmail.com)
- * - Provides actionable error messages
- * - Prevents registration with invalid email addresses
+ * Security Features:
+ * - Blocks temporary email services (e.g., tempmail.com)
+ * - Blocks known fake/test domains (e.g., test.com, fake.com, fadds.com)
+ * - Suggests corrections for common typos
  * 
  * @example
  * Input:  "  USER@EXAMPLE.COM  "
@@ -196,6 +273,10 @@ const extractDomain = (email: string): string | null => {
  * @example
  * Input:  "user@gamil.com"
  * Error:  "Did you mean user@gmail.com?" ❌
+ * 
+ * @example
+ * Input:  "user@fadds.com"
+ * Error:  "Please use a valid email address. Fake or disposable emails are not allowed." ❌
  */
 const emailSchema = z
   .string()
@@ -211,7 +292,16 @@ const emailSchema = z
     
     if (!domain) return; // Let the email() validator handle this
     
-    // Check if domain is a known typo
+    // 1. Check for disposable/fake email domains (HIGHEST PRIORITY)
+    if (DISPOSABLE_EMAIL_DOMAINS.has(domain)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please use a valid email address. Disposable or fake email addresses are not allowed.",
+      });
+      return; // Stop further validation
+    }
+    
+    // 2. Check if domain is a known typo
     const correctDomain = DOMAIN_TYPO_MAP[domain];
     
     if (correctDomain) {
@@ -222,6 +312,21 @@ const emailSchema = z
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `Did you mean ${suggestedEmail}? Please check your email address.`,
+      });
+      return;
+    }
+    
+    // 3. Check for suspicious patterns (e.g., very short domains, all consonants)
+    // This catches things like "asdf.com", "qwer.com", etc.
+    const domainName = domain.split('.')[0]; // Get "fadds" from "fadds.com"
+    const hasNoVowels = !/[aeiou]/i.test(domainName) && domainName.length > 2;
+    const isRepeatingPattern = /^(.)\1+$/.test(domainName); // e.g., "aaaa.com"
+    const isKeyboardPattern = /^(asdf|qwer|zxcv|hjkl|uiop|test|fake|spam|junk)/i.test(domainName);
+    
+    if (hasNoVowels || isRepeatingPattern || isKeyboardPattern) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "This email domain looks suspicious. Please use a valid email address from a real provider.",
       });
     }
   });
