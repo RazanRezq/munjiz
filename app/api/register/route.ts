@@ -4,6 +4,9 @@ import User from "@/models/User/userSchema";
 import dbConnect from "@/lib/mongodb";
 import { registerSchema } from "@/lib/validations/auth";
 import { ZodError } from "zod";
+import { validateEmailDomain } from "@/lib/auth/email-verification";
+import { generateVerificationToken } from "@/lib/tokens";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export async function POST(req: Request) {
   try {
@@ -11,6 +14,23 @@ export async function POST(req: Request) {
 
     // Validate request body with Zod
     const validatedData = registerSchema.parse(body);
+
+    // Validate email domain
+    const isDomainValid = await validateEmailDomain(validatedData.email);
+    if (!isDomainValid) {
+      return NextResponse.json(
+        {
+          error: "Validation failed",
+          details: [
+            {
+              field: "email",
+              message: "This email domain does not exist or cannot receive emails. Please use a valid email provider."
+            }
+          ]
+        },
+        { status: 400 }
+      );
+    }
 
     await dbConnect();
 
@@ -26,22 +46,25 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(validatedData.password, 10);
 
-    // Create user
+    // Create user (email not verified yet)
     const user = await User.create({
       name: validatedData.name,
       email: validatedData.email,
       password: hashedPassword,
       role: "user",
+      emailVerified: null, // Will be set when user verifies email
     });
+
+    // Generate verification token
+    const verificationToken = await generateVerificationToken(validatedData.email);
+
+    // Send verification email
+    await sendVerificationEmail(validatedData.email, verificationToken.token);
 
     return NextResponse.json(
       {
         success: true,
-        user: {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-        },
+        message: "Registration successful! Please check your email to verify your account.",
       },
       { status: 201 }
     );

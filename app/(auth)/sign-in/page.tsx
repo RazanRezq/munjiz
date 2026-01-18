@@ -45,7 +45,12 @@ const SignInPage = () => {
       });
 
       if (result?.error) {
-        setError("Invalid email or password");
+        // Check if the error is due to unverified email
+        if (result.error === "EmailNotVerified") {
+          setError("Please verify your email address before logging in. Check your inbox for the verification link.");
+        } else {
+          setError("Invalid email or password");
+        }
       } else {
         router.push("/dashboard");
         router.refresh();

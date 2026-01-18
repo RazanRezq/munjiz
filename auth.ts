@@ -54,6 +54,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return null;
           }
 
+          // Check if email is verified
+          if (!user.emailVerified) {
+            console.log("❌ Email not verified");
+            throw new Error("EmailNotVerified");
+          }
+
           const isPasswordValid = await bcrypt.compare(
             validatedCredentials.data.password,
             user.password

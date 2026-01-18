@@ -25,12 +25,14 @@ const SignUpPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof SignUpInput, string>>>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
     setFieldErrors({});
     setIsLoading(true);
 
@@ -55,24 +57,31 @@ const SignUpPage = () => {
       const registerData = await registerResponse.json();
 
       if (!registerResponse.ok) {
-        setError(registerData.error || "Registration failed");
+        // Check if there are field-specific errors (like email domain validation)
+        if (registerData.details && Array.isArray(registerData.details)) {
+          const errors: Partial<Record<keyof SignUpInput, string>> = {};
+          registerData.details.forEach((detail: { field: string; message: string }) => {
+            if (detail.field) {
+              errors[detail.field as keyof SignUpInput] = detail.message;
+            }
+          });
+          setFieldErrors(errors);
+        } else {
+          // Fallback to generic error message
+          setError(registerData.error || "Registration failed");
+        }
         setIsLoading(false);
         return;
       }
 
-      // Automatically sign in after successful registration
-      const result = await signIn("credentials", {
-        email: validatedData.email,
-        password: validatedData.password,
-        redirect: false,
-      });
+      // Show success message - user needs to verify email
+      setSuccess(registerData.message || "Registration successful! Please check your email to verify your account.");
 
-      if (result?.error) {
-        setError("Registration successful, but sign-in failed. Please try signing in.");
-      } else {
-        router.push("/dashboard");
-        router.refresh();
-      }
+      // Clear form fields
+      setName("");
+      setEmail("");
+      setPassword("");
+      setConfirmPassword("");
     } catch (err) {
       if (err instanceof ZodError) {
         // Handle Zod validation errors
@@ -164,6 +173,13 @@ const SignUpPage = () => {
               </span>
             </div>
           </div>
+
+          {/* Success message */}
+          {success && (
+            <div className="text-sm text-green-600 dark:text-green-500 bg-green-50 dark:bg-green-950/30 p-3 rounded-lg border border-green-200 dark:border-green-900">
+              {success}
+            </div>
+          )}
 
           {/* Error message */}
           {error && (

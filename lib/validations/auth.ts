@@ -120,39 +120,6 @@ const DISPOSABLE_EMAIL_DOMAINS = new Set([
   "testing.com",
 ]);
 
-/**
- * Legitimate Email Provider Domains Whitelist
- * 
- * Common, trusted email providers. This is used as a hint system
- * to provide better error messages when users use uncommon domains.
- */
-const LEGITIMATE_EMAIL_DOMAINS = new Set([
-  // Major providers
-  "gmail.com",
-  "yahoo.com",
-  "outlook.com",
-  "hotmail.com",
-  "icloud.com",
-  "protonmail.com",
-  "aol.com",
-  "mail.com",
-  "zoho.com",
-  
-  // Microsoft
-  "live.com",
-  "msn.com",
-  "outlook.sa",
-  
-  // Regional
-  "yandex.com",
-  "mail.ru",
-  "gmx.com",
-  "web.de",
-  "qq.com",
-  "163.com",
-  "126.com",
-]);
-
 // ============================================================================
 // EMAIL TYPO DETECTION - Common Domain Misspellings
 // ============================================================================

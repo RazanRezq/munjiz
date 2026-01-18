@@ -56,3 +56,7 @@ export type {
   TaskActivityAction,
 } from "./Task/taskSchema";
 export { taskTypeConfig, createTask } from "./Task/taskSchema";
+
+// Verification Token
+export { default as VerificationToken } from "./VerificationToken/verificationTokenSchema";
+export type { IVerificationToken } from "./VerificationToken/verificationTokenSchema";
