@@ -205,7 +205,7 @@ const SignUpPage = () => {
                   setName(e.target.value);
                   setFieldErrors((prev) => ({ ...prev, name: undefined }));
                 }}
-                placeholder="John Doe"
+                placeholder="Your full name"
                 disabled={isLoading}
                 className={`flex h-9 w-full rounded-lg border ${
                   fieldErrors.name ? "border-destructive" : "border-input"
@@ -215,6 +215,8 @@ const SignUpPage = () => {
                 <p className="text-xs text-destructive mt-1">{fieldErrors.name}</p>
               )}
             </div>
+
+
             <div className="space-y-1">
               <label
                 htmlFor="email"

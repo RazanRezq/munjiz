@@ -60,3 +60,15 @@ export { taskTypeConfig, createTask } from "./Task/taskSchema";
 // Verification Token
 export { default as VerificationToken } from "./VerificationToken/verificationTokenSchema";
 export type { IVerificationToken } from "./VerificationToken/verificationTokenSchema";
+
+// Invitation
+export { default as Invitation } from "./Invitation/invitationSchema";
+export type {
+  IInvitation,
+  InvitationStatus,
+  InvitationRole,
+} from "./Invitation/invitationSchema";
+export {
+  INVITATION_EXPIRY_DAYS,
+  getInvitationExpiry,
+} from "./Invitation/invitationSchema";
